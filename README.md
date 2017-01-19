@@ -6,10 +6,12 @@
 
 ## Contributing
 > in development
+
 #### Setup
 
 ```bash
 yarn install
+bower install
 yarn dev
 ```
 
