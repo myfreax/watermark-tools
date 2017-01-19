@@ -1,6 +1,8 @@
 # watermark-tools
+![watermark](assets/show.png)
 
 ## What it can do?
+
 - Generate a watermark
 - Typesetting
 
