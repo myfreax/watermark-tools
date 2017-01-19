@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="App">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <title>Typesetting tools</title>
+    <link href="assets/materialize/dist/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body ng-controller="canvasCtrl">
+<div class="row">
+    <div class="col s12">
+        <canvas id="fabric" width="1440" height="900" style="border: dashed 1px silver"></canvas>
+    </div>
+    <ul id="slide-out" class="side-nav">
+        <li>
+            <ul class="tabs">
+                <li class="tab col s6" ng-click="tab = 1"><a href="#" ng-class="{active:tab === 1}">创建元素</a></li>
+                <li class="tab col s6" ng-click="tab = 2"><a ng-class="{active:tab === 2}" href="#">修改属性</a></li>
+            </ul>
+        </li>
+        <div class="row" ng-show="tab === 1">
+            <form class="col s12">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <textarea id="textarea" class="materialize-textarea" ng-model="info"></textarea>
+                        <label for="textarea">资讯</label>
+                    </div>
+                    <a class="waves-effect waves-light btn" ng-click="addText()">添加</a>
+                </div>
+            </form>
+        </div>
+        <div class="row" ng-show="tab === 2">
+            <form class="col s12">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <textarea id="modifyInfo" class="materialize-textarea" bind-value-to="text"></textarea>
+                        <label for="modifyInfo" ng-class="{active:tab == 2}">资讯</label>
+                    </div>
+                    <div class="input-field col s12">
+                        <select>
+                            <option value="0">黑体</option>
+                            <option value="1">宋体</option>
+                            <option value="2">方正</option>
+                            <option value="3">ubuntu</option>
+                        </select>
+                        <label>字体类型</label>
+                    </div>
+                    <div class="input-field col s12">
+                        <label for="test5" style="position: static;">字体大小</label>
+                        <p class="range-field">
+                            <input type="range" id="test5" min="0" max="100" bind-value-to="fontSize"/>
+                        </p>
+                    </div>
+                    <div class="input-field col s12">
+                        <label for="test6" style="position: static;">字体行高</label>
+                        <p class="range-field">
+                            <input type="range" id="test6" min="0" max="100" bind-value-to="lineHeight"/>
+                        </p>
+                    </div>
+                    <div class="input-field col s12">
+                        <label for="test7" style="position: static;">字体间距</label>
+                        <p class="range-field">
+                            <input type="range" id="test7" min="0" max="100" bind-value-to="charSpacing"/>
+                        </p>
+                    </div>
+                    <div class="input-field col s12">
+                        <label  style="position: static;">填充/描边/背景/文本背景</label>
+                        <p class="range-field">
+                            <input type="color"  min="0" max="100" bind-value-to="fill"/>
+                            <input type="color"  min="0" max="100" bind-value-to="stroke"/>
+                            <input type="color"  min="0" max="100" bind-value-to="bgColor"/>
+                            <input type="color"  min="0" max="100" bind-value-to="textBgColor"/>
+
+                        </p>
+                    </div>
+                    <div class="input-field col s12">
+                        <select bind-value-to="textAlign">
+                            <option value="Left">左</option>
+                            <option value="Right">右</option>
+                            <option value="Justify">对齐</option>
+                            <option value="Center">中心</option>
+                        </select>
+                        <label>字体类型</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </ul>
+
+    <a href="#" data-activates="slide-out" class="button-collapse">
+        <i class="material-icons" style="display: none">menu</i>
+    </a>
+</div>
+<script src="assets/jquery/dist/jquery.js"></script>
+<script src="assets/fabric.js/dist/fabric.js"></script>
+<script src="assets/angular/angular.js"></script>
+<script src="assets/materialize/dist/js/materialize.js"></script>
+<script type="text/javascript">
+    $(".button-collapse").sideNav({
+        menuWidth: 300, // Default is 240
+        edge: 'right', // Choose the horizontal origin
+        closeOnClick: false, // Closes side-nav on <a> clicks, useful for Angular/Meteor
+        draggable: false
+    });// Choose whether you can drag to open on touch screens});
+    $('.button-collapse').sideNav('show');
+    setTimeout(function () {
+        $('#sidenav-overlay').remove();
+    }, 0);
+
+    $(document).ready(function () {
+        $('select').material_select();
+    });
+</script>
+</body>
+</html>
