@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
     <title>Typesetting tools</title>
     <link href="assets/materialize/dist/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link rel="stylesheet" href="assets/css/font.css">
 </head>
 <body ng-controller="canvasCtrl">
 <div class="row">
@@ -36,11 +37,8 @@
                         <label for="modifyInfo" ng-class="{active:tab == 2}">资讯</label>
                     </div>
                     <div class="input-field col s12">
-                        <select>
-                            <option value="0">黑体</option>
-                            <option value="1">宋体</option>
-                            <option value="2">方正</option>
-                            <option value="3">ubuntu</option>
+                        <select bind-value-to="fontFamily">
+                            <option ng-repeat="option in fonts" value="{{option.name}}">{{option.name}}</option>
                         </select>
                         <label>字体类型</label>
                     </div>
@@ -59,7 +57,13 @@
                     <div class="input-field col s12">
                         <label for="test7" style="position: static;">字体间距</label>
                         <p class="range-field">
-                            <input type="range" id="test7" min="0" max="100" bind-value-to="charSpacing"/>
+                            <input type="range"  min="0" max="100" bind-value-to="charSpacing"/>
+                        </p>
+                    </div>
+                    <div class="input-field col s12">
+                        <label  style="position: static;">透明度</label>
+                        <p class="range-field">
+                            <input type="range"  min="0" max="100" bind-value-to="opacity"/>
                         </p>
                     </div>
                     <div class="input-field col s12">
@@ -69,7 +73,6 @@
                             <input type="color"  min="0" max="100" bind-value-to="stroke"/>
                             <input type="color"  min="0" max="100" bind-value-to="bgColor"/>
                             <input type="color"  min="0" max="100" bind-value-to="textBgColor"/>
-
                         </p>
                     </div>
                     <div class="input-field col s12">
