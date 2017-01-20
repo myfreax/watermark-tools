@@ -1,20 +1,25 @@
 import fabric from 'fabric'
 import {app, canvas} from './app'
-import {supportedFonts} from 'detect-font';
-
+import FontFaceObserver from 'fontfaceobserver'
+import fontsConfig from './config/font'
 import './factory'
 import './directive'
 
+let fontCache = [];
+
 app.controller('canvasCtrl', ['$scope', 'commonFactory', ($scope, commonFactory) => {
+
     //初始化tab的值
     $scope.tab = 1;
+
+    $scope.fonts = fontsConfig;
 
     $scope.getText = () => {
         return commonFactory.getActiveProp('text');
     };
 
     $scope.setText = value => {
-        return commonFactory.setActiveProp('text',value);
+        return commonFactory.setActiveProp('text', value);
     };
 
 
@@ -43,7 +48,7 @@ app.controller('canvasCtrl', ['$scope', 'commonFactory', ($scope, commonFactory)
     };
 
     $scope.setLineHeight = value => {
-        return commonFactory.setActiveStyle('lineHeight', parseInt(value)/10);
+        return commonFactory.setActiveStyle('lineHeight', parseInt(value) / 10);
     };
 
     $scope.getCharSpacing = () => {
@@ -51,7 +56,7 @@ app.controller('canvasCtrl', ['$scope', 'commonFactory', ($scope, commonFactory)
     };
 
     $scope.setCharSpacing = value => {
-        return commonFactory.setActiveStyle('charSpacing',parseInt(value))
+        return commonFactory.setActiveStyle('charSpacing', parseInt(value))
     };
 
     $scope.getFill = () => {
@@ -59,7 +64,7 @@ app.controller('canvasCtrl', ['$scope', 'commonFactory', ($scope, commonFactory)
     };
 
     $scope.setFill = value => {
-        return commonFactory.setActiveStyle('fill',value)
+        return commonFactory.setActiveStyle('fill', value)
     };
 
     $scope.getStroke = () => {
@@ -67,7 +72,7 @@ app.controller('canvasCtrl', ['$scope', 'commonFactory', ($scope, commonFactory)
     };
 
     $scope.setStroke = value => {
-        return commonFactory.setActiveStyle('stroke',value)
+        return commonFactory.setActiveStyle('stroke', value)
     };
 
 
@@ -76,28 +81,54 @@ app.controller('canvasCtrl', ['$scope', 'commonFactory', ($scope, commonFactory)
     };
 
     $scope.setBgColor = value => {
-        return commonFactory.setActiveStyle('backgroundColor',value)
+        return commonFactory.setActiveStyle('backgroundColor', value)
     };
 
 
-    $scope.getTextAlign = function() {
+    $scope.getTextAlign = function () {
         return commonFactory.capitalize(commonFactory.getActiveProp('textAlign'));
     };
 
 
-    $scope.setTextAlign = function(value) {
+    $scope.setTextAlign = function (value) {
         return commonFactory.setActiveProp('textAlign', value.toLowerCase());
     };
 
 
-    $scope.getTextBgColor = function() {
+    $scope.getTextBgColor = function () {
         return commonFactory.getActiveProp('textBackgroundColor');
     };
 
 
-    $scope.setTextBgColor = function(value) {
+    $scope.setTextBgColor = function (value) {
         return commonFactory.setActiveProp('textBackgroundColor', value);
     };
+
+
+    $scope.getFontFamily = function () {
+        return commonFactory.getActiveProp('fontFamily').toLowerCase();
+    };
+
+    $scope.setFontFamily = value => {
+        let font = new FontFaceObserver(value);
+        font.load().then(function () {
+            fontCache.push(value);
+            return commonFactory.setActiveProp('fontFamily', value.toLowerCase());
+        }).catch((err) => {
+            console.info(err);
+        });
+    };
+
+    $scope.getOpacity = function() {
+        return commonFactory.getActiveStyle('opacity') * 100;
+    };
+
+
+    $scope.setOpacity = function(value) {
+        commonFactory.setActiveStyle('opacity', parseInt(value, 10) / 100);
+    };
+
+
 
     function updateScope() {
         $scope.tab = 2;
@@ -110,6 +141,7 @@ app.controller('canvasCtrl', ['$scope', 'commonFactory', ($scope, commonFactory)
         .on('group:selected', updateScope)
         .on('path:created', updateScope)
         .on('selection:cleared', updateScope);
-}]);
+}])
+;
 
 
