@@ -6,6 +6,7 @@ const webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 module.exports = {
     entry: [
         'webpack-hot-middleware/client?noInfo=false&reload=true',   //require
@@ -23,7 +24,7 @@ module.exports = {
                 exclude: /(node_modules|bower_components)/,
                 loader: 'babel-loader',
                 query: {
-                    presets: ['es2015']
+                    presets: ['es2015','stage-0']
                 }
             },
             {test: /\.less$/, loader: 'style-loader!css-loader!less-loader'}, // use ! to chain loaders
@@ -32,7 +33,7 @@ module.exports = {
             {test:/\.js$/,loader:'webpack-module-hot-accept'}
         ]
     },
-    devtool: 'eval-source-map',
+    //devtool: 'eval-source-map',
     // 第三方类库直接引用，不用打包
     externals: {
         "angular": "angular",
