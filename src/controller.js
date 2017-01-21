@@ -9,6 +9,76 @@ let fontCache = [];
 
 app.controller('canvasCtrl', ['$scope', 'commonFactory', ($scope, commonFactory) => {
 
+
+    let world = new fabric.Text('world', {
+        top: 0,
+        left: 0,
+        hasControls:false
+    });
+
+    let hello = new fabric.Text('hello', {
+        top: 100,
+        left: 0,
+        hasControls:false
+
+    });
+
+    let excl = new fabric.Text('!!', {
+        top: 100,
+        left: 10,
+        hasControls:false
+
+    });
+
+
+    canvas.add(world, hello,excl);
+
+
+    console.info('高度', world.getHeight());   //高度
+    console.info('宽度', world.getWidth());    //宽度
+    console.info('对象元素中心，与canvas的对象无关，是自身的中点', world.getCenterPoint());  //对象元素中心，与canvas的对象无关，是自身的中点
+    console.info('获取与顶部的距离', world.getLeft()); //获取与顶部的距离
+    console.info('获取与左边的距离', world.getTop());  //获取与左边的距离
+    console.info('getCanvasHeight', canvas.getHeight());
+    console.info('getCanvasWidth', canvas.getWidth());
+
+    function updateScope(options) {
+        console.info('这个点鼠标第二次点击的坐标点', canvas.getPointer(options.e));// 这个点鼠标第二次点击的坐标点
+        $scope.tab = 2;
+        $scope.$$phase || $scope.$digest();
+        canvas.renderAll();
+    }
+
+    canvas
+        .on('object:selected', updateScope)
+        .on('group:selected', updateScope)
+        .on('path:created', updateScope)
+        .on('selection:cleared', updateScope);
+
+    canvas.on('object:moving', (options) => {
+        //计算五个点的位置，上左，上右，下左，下右,中心点
+        console.info('left', 'top', options.target.getLeft(), options.target.getTop());
+        console.info('中点', options.target.getLeft() + options.target.getWidth() / 2, options.target.getTop() + options.target.getHeight() / 2);
+        console.info('上左', options.target.getLeft(), options.target.getTop());
+        let points = [];
+        let ele = canvas.getObjects();
+
+        for (let i = 0; i < ele.length; i++) {
+            points.push(ele[i].getLeft());
+            points.push(ele[i].getTop());
+        }
+
+        console.info(points);
+    });
+
+
+    canvas.on('object:scaling', options => {
+        console.info('中点', options.target.getCenterPoint());
+        console.info('width', options.target.getWidth());
+        console.info('height', options.target.getHeight());
+    });
+
+
     //初始化tab的值
     $scope.tab = 1;
 
@@ -119,28 +189,14 @@ app.controller('canvasCtrl', ['$scope', 'commonFactory', ($scope, commonFactory)
         });
     };
 
-    $scope.getOpacity = function() {
+    $scope.getOpacity = function () {
         return commonFactory.getActiveStyle('opacity') * 100;
     };
 
 
-    $scope.setOpacity = function(value) {
+    $scope.setOpacity = function (value) {
         commonFactory.setActiveStyle('opacity', parseInt(value, 10) / 100);
     };
-
-
-
-    function updateScope() {
-        $scope.tab = 2;
-        $scope.$$phase || $scope.$digest();
-        canvas.renderAll();
-    }
-
-    canvas
-        .on('object:selected', updateScope)
-        .on('group:selected', updateScope)
-        .on('path:created', updateScope)
-        .on('selection:cleared', updateScope);
 }])
 ;
 
