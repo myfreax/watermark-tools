@@ -26,4 +26,15 @@ for(let k = 0;k < 144;k++){
 
 
 let optionsGroup = new fabric.Group(YArray.concat(xArray),{selectable:false});
-//canvas.add(optionsGroup);
+
+let redLine = new fabric.Line([0, 0, 0, 0], {
+    left: 0,
+    top: 0,
+    stroke: 'red',
+    selectable: false,
+    auxiliary: true
+});
+
+
+canvas.add(optionsGroup);
+canvas.add(redLine);
