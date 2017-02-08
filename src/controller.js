@@ -6,14 +6,12 @@ import './factory'
 import './directive'
 
 let fontCache = [];
-
 app.controller('canvasCtrl', ['$scope', 'commonFactory', ($scope, commonFactory) => {
-
-
     let world = new fabric.Text('world', {
         top: 0,
         left: 0,
-        hasControls: false
+        hasControls: false,
+
     });
 
     let hello = new fabric.Text('hello', {
@@ -33,9 +31,10 @@ app.controller('canvasCtrl', ['$scope', 'commonFactory', ($scope, commonFactory)
 
     canvas.add(world, hello, excl);
 
+    console.info(canvas.getObjects());
 
     console.info('高度', world.getHeight());   //高度
-    console.info('宽度', world.getWidth());    //宽度
+    console.info('宽度', world.getWidth());        //宽度
     console.info('对象元素中心，与canvas的对象无关，是自身的中点', world.getCenterPoint());  //对象元素中心，与canvas的对象无关，是自身的中点
     console.info('获取与顶部的距离', world.getLeft()); //获取与顶部的距离
     console.info('获取与左边的距离', world.getTop());  //获取与左边的距离
@@ -43,7 +42,6 @@ app.controller('canvasCtrl', ['$scope', 'commonFactory', ($scope, commonFactory)
     console.info('getCanvasWidth', canvas.getWidth());
 
     function updateScope(options) {
-        console.info('这个点鼠标第二次点击的坐标点', canvas.getPointer(options.e));// 这个点鼠标第二次点击的坐标点
         $scope.tab = 2;
         $scope.$$phase || $scope.$digest();
         canvas.renderAll();
@@ -73,58 +71,47 @@ app.controller('canvasCtrl', ['$scope', 'commonFactory', ($scope, commonFactory)
         console.info('left', 'top', options.target.getLeft(), options.target.getTop());
         console.info('中点', options.target.getLeft() + options.target.getWidth() / 2, options.target.getTop() + options.target.getHeight() / 2);
         console.info('上左', options.target.getLeft(), options.target.getTop());
-        let points = [];
-        let ele = canvas.getObjects();
-        console.info(ele);
 
-        for (let i = 0; i < ele.length; i++) {
-            points.push(ele[i].getLeft(), ele[i].getTop());
+
+        let points = [];
+        let eles = canvas.getObjects();
+
+        console.info(eles);
+
+        for (let i = 2; i < eles.length; i++) {
+            points.push(eles[i].getLeft(), eles[i].getTop()); //获取文本的元素的x,y
         }
 
         console.info(points);
+
         let dup = findDuplicates(points);
-        let line = null;
+
 
         //查找点
-        if(dup.length > 0){
+        if (dup.length > 0) {
             let firstPos = points.indexOf(dup[0]);
             let sedPos = points.lastIndexOf(dup[0]);
-            console.info('indexOf',points[firstPos],firstPos%2===0?points[firstPos+1]:points[firstPos-1]);
-            console.info('lastIndexOf',points[sedPos],sedPos%2===0?points[sedPos+1]:points[sedPos-1]);
+
+
+            console.info('indexOf', points[firstPos], firstPos % 2 === 0 ? points[firstPos + 1] : points[firstPos - 1]);
+            console.info('lastIndexOf', points[sedPos], sedPos % 2 === 0 ? points[sedPos + 1] : points[sedPos - 1]);
 
             //  画线
-            if (firstPos%2===0){
-                // 这条线应该在全局共享，方便查找移除
-                 line = new fabric.Line([0, 0, 0, 900], {
-                    left: points[firstPos],
-                    top: 0,
-                    stroke: 'red',
-                    selectable:false
-                });
-                console.info('画x轴的偏移线',{
-                    left: points[firstPos],
-                    top: 0,
-                    stroke: 'red',
-                    selectable:false
-                })
-            }else{
-                 line = new fabric.Line([1440, 0, 0, 0], {
-                    left: 0,
-                    top: points[firstPos],
-                    stroke: 'red',
-                    selectable:false
-                });
-                console.info('画y轴的偏移线', {
-                    left: 0,
-                    top: points[firstPos],
-                    stroke: 'red',
-                    selectable:false
-                })
+            if (firstPos % 2 === 0) {
+                eles[1].set('y2', 900);
+                eles[1].set('left', points[firstPos]);
+                console.info('画x轴的偏移线')
+            } else {
+                eles[1].set('x1', 1440);
+                eles[1].set('top', points[firstPos]);
+                console.info('画y轴的偏移线');
             }
-            canvas.add(line);
-            //canvas.remove(line);
 
-
+        } else {
+            eles[1].set('x1', 0);
+            eles[1].set('y2', 0);
+            eles[1].set('top', 0);
+            eles[1].set('top', 0);
         }
 
     });
@@ -142,13 +129,9 @@ app.controller('canvasCtrl', ['$scope', 'commonFactory', ($scope, commonFactory)
 
     $scope.fonts = fontsConfig;
 
-    $scope.getText = () => {
-        return commonFactory.getActiveProp('text');
-    };
+    $scope.getText = () => commonFactory.getActiveProp('text');
 
-    $scope.setText = value => {
-        return commonFactory.setActiveProp('text', value);
-    };
+    $scope.setText = value => commonFactory.setActiveProp('text', value);
 
 
     $scope.addText = () => {
@@ -162,84 +145,62 @@ app.controller('canvasCtrl', ['$scope', 'commonFactory', ($scope, commonFactory)
     };
 
 
-    $scope.getFontSize = () => {
-        return commonFactory.getActiveStyle('fontSize');
-    };
+    $scope.getFontSize = () => commonFactory.getActiveStyle('fontSize');
 
-    $scope.setFontSize = (value) => {
+    $scope.setFontSize = value => {
         commonFactory.setActiveStyle('fontSize', parseInt(value, 10));
     };
 
 
-    $scope.getLineHeight = () => {
-        return commonFactory.getActiveStyle('lineHeight');
-    };
+    $scope.getLineHeight = () => commonFactory.getActiveStyle('lineHeight');
 
     $scope.setLineHeight = value => {
         return commonFactory.setActiveStyle('lineHeight', parseInt(value) / 10);
     };
 
-    $scope.getCharSpacing = () => {
-        return commonFactory.getActiveStyle('charSpacing');
-    };
+    $scope.getCharSpacing = () => commonFactory.getActiveStyle('charSpacing');
 
     $scope.setCharSpacing = value => {
         return commonFactory.setActiveStyle('charSpacing', parseInt(value))
     };
 
-    $scope.getFill = () => {
-        return commonFactory.getActiveStyle('fill')
-    };
+    $scope.getFill = () => commonFactory.getActiveStyle('fill');
 
     $scope.setFill = value => {
         return commonFactory.setActiveStyle('fill', value)
     };
 
-    $scope.getStroke = () => {
-        return commonFactory.getActiveStyle('stroke')
-    };
+    $scope.getStroke = () => commonFactory.getActiveStyle('stroke');
 
     $scope.setStroke = value => {
         return commonFactory.setActiveStyle('stroke', value)
     };
 
 
-    $scope.getBgColor = () => {
-        return commonFactory.getActiveStyle('backgroundColor')
-    };
+    $scope.getBgColor = () => commonFactory.getActiveStyle('backgroundColor');
 
     $scope.setBgColor = value => {
         return commonFactory.setActiveStyle('backgroundColor', value)
     };
 
 
-    $scope.getTextAlign = function () {
-        return commonFactory.capitalize(commonFactory.getActiveProp('textAlign'));
-    };
+    $scope.getTextAlign = () => commonFactory.capitalize(commonFactory.getActiveProp('textAlign'));
 
 
-    $scope.setTextAlign = function (value) {
-        return commonFactory.setActiveProp('textAlign', value.toLowerCase());
-    };
+    $scope.setTextAlign = value => commonFactory.setActiveProp('textAlign', value.toLowerCase());
 
 
-    $scope.getTextBgColor = function () {
-        return commonFactory.getActiveProp('textBackgroundColor');
-    };
+    $scope.getTextBgColor = () => commonFactory.getActiveProp('textBackgroundColor');
 
 
-    $scope.setTextBgColor = function (value) {
-        return commonFactory.setActiveProp('textBackgroundColor', value);
-    };
+    $scope.setTextBgColor = value => commonFactory.setActiveProp('textBackgroundColor', value);
 
 
-    $scope.getFontFamily = function () {
-        return commonFactory.getActiveProp('fontFamily').toLowerCase();
-    };
+    $scope.getFontFamily = () => commonFactory.getActiveProp('fontFamily').toLowerCase();
 
     $scope.setFontFamily = value => {
         let font = new FontFaceObserver(value);
-        font.load().then(function () {
+        font.load().then(() => {
             fontCache.push(value);
             return commonFactory.setActiveProp('fontFamily', value.toLowerCase());
         }).catch((err) => {
@@ -247,12 +208,10 @@ app.controller('canvasCtrl', ['$scope', 'commonFactory', ($scope, commonFactory)
         });
     };
 
-    $scope.getOpacity = function () {
-        return commonFactory.getActiveStyle('opacity') * 100;
-    };
+    $scope.getOpacity = () => commonFactory.getActiveStyle('opacity') * 100;
 
 
-    $scope.setOpacity = function (value) {
+    $scope.setOpacity = value => {
         commonFactory.setActiveStyle('opacity', parseInt(value, 10) / 100);
     };
 }])
