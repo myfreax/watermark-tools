@@ -1,13 +1,14 @@
 # watermark-tools
 ![watermark](assets/show.png)
 
-## What it can do?
+## Features
 
-- Generate a watermark
+- Drawing
 - Typesetting
+- Export to png
+- Asynchronous loading of fonts
 
 ## Contributing
-> in development
 
 #### Setup
 
@@ -20,4 +21,15 @@ yarn dev
 
 open `http://127.0.0.1:3000` in browser
 
-##Change Log
+## Change Log
+
+[ChangeLog](./ChangeLog)
+
+## Development environment
+- webpack
+  - HMR(Hot Module Replacement)
+- ES6
+- bower
+
+## LICENSE
+MIT
