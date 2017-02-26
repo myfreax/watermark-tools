@@ -5,7 +5,13 @@
 import {app, canvas} from './app'
 app.factory('commonFactory', () => {
     return {
-        setActiveStyle (styleName, value, object) {
+		/**
+         * 设置活动元素风格
+		 * @param styleName
+		 * @param value
+		 * @param object
+		 */
+		setActiveStyle (styleName, value, object) {
             object = object || canvas.getActiveObject();
             if (!object) return;
 
@@ -22,25 +28,49 @@ app.factory('commonFactory', () => {
             canvas.renderAll();
         },
 
-        getActiveStyle (styleName, object) {
+		/**
+         * 获取活动元素风格
+		 * @param styleName
+		 * @param object
+		 * @returns {*}
+		 */
+		getActiveStyle (styleName, object) {
             object = object || canvas.getActiveObject();
             if (!object) return '';
             return (object.getSelectionStyles && object.isEditing)
                 ? (object.getSelectionStyles()[styleName] || '')
                 : (object[styleName] || '');
         },
-        getActiveProp(attr){
+
+		/**
+         * 获取活动元素属性
+		 * @param attr
+		 * @returns {*}
+		 */
+		getActiveProp(attr){
             let object = canvas.getActiveObject();
             if (!object) return '';
             return object[attr] || '';
         },
-        setActiveProp(attr,value){
+
+		/**
+         * 设置活动元素的属性
+		 * @param attr
+		 * @param value
+		 */
+		setActiveProp(attr,value){
             let object = canvas.getActiveObject();
             if (!object) return;
             object.set(attr, value).setCoords();
             canvas.renderAll();
         },
-        capitalize(string){
+
+		/***
+         * 转换为大写
+		 * @param string
+		 * @returns {string}
+		 */
+		capitalize(string){
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
     }

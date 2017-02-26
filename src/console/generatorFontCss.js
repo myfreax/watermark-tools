@@ -7,7 +7,11 @@ const appConfig = require('../config/app');
 const fs = require('fs');
 const path = require('path');
 
-
+/**
+ *  生成字体模板样式
+ * @param font
+ * @returns {string}
+ */
 let template = font => {
     let urls = font.src.map(url => {
         url = url.toString();
@@ -19,6 +23,10 @@ let template = font => {
 
 };
 
+/**
+ * 生成css文件
+ * @returns {Promise.<void>}
+ */
 async function generate() {
     try {
         let content = fontsConfig.map(font => {
